@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* Palette and type from CLAUDE.md "Design specifics". */
+@theme inline {
+  --font-sans: var(--font-hanken), system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-space: #05060a;
+  --color-ivory: #f2ebdd;
+  --color-muted: #b8b2a7;
+  --color-gold: #d9b77e;
+  --color-ice: #a8c8e8;
+  --color-silver: #cfc6b8;
+  --color-amber: #c9a36a;
+  --color-rose: #e0707a;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--color-space);
+  color: var(--color-ivory);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+/* Never render below weight 400 (Design specifics). */
+strong,
+b {
+  font-weight: 600;
+}
+
+@layer components {
+  /* Glass panel: blur, bg-black/50, 1px white/8% border, soft radius. */
+  .glass {
+    background: rgb(0 0 0 / 0.5);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: 18px;
+  }
+
+  .divider {
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .heading {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--color-ivory);
+  }
+
+  /* Small secondary label: the only place muted text is used. */
+  .eyebrow {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+
+  .quiet-btn {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-ivory);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: 999px;
+    padding: 6px 14px;
+    transition:
+      border-color 0.6s var(--ease-soft),
+      color 0.6s var(--ease-soft),
+      background-color 0.6s var(--ease-soft);
+  }
+  .quiet-btn:hover:not(:disabled) {
+    border-color: rgb(217 183 126 / 0.55);
+    color: var(--color-gold);
+  }
+  .quiet-btn.primary {
+    width: 100%;
+    padding: 10px 14px;
+    border-color: rgb(217 183 126 / 0.55);
+    color: var(--color-gold);
+  }
+  .quiet-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .icon-btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: var(--color-ivory);
+    transition:
+      background-color 0.5s var(--ease-soft),
+      color 0.5s var(--ease-soft);
+  }
+  .icon-btn:hover {
+    background: rgb(255 255 255 / 0.06);
+    color: var(--color-gold);
+  }
+
+  .field {
+    width: 100%;
+    background: rgb(255 255 255 / 0.04);
+    color: var(--color-ivory);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font: inherit;
+    font-size: 15px;
+    transition: border-color 0.6s var(--ease-soft);
+  }
+  .field::placeholder {
+    color: var(--color-muted);
+  }
+  .field:focus {
+    outline: none;
+    border-color: rgb(217 183 126 / 0.5);
+  }
+  .field:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .quiet-btn:focus-visible,
+  .icon-btn:focus-visible,
+  .tab:focus-visible,
+  .field:focus-visible,
+  input[type="checkbox"]:focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+
+  input[type="checkbox"],
+  input[type="range"] {
+    accent-color: var(--color-gold);
+  }
+}
+
+/* Idle panel float: <=4px, slow. Stops on hover/focus and for reduced motion. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.drift {
+  animation: drift 9s ease-in-out infinite;
+}
+.drift:hover,
+.drift:focus-within {
+  animation-play-state: paused;
+}
+
+/* One intro fade on load. */
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.intro-fade {
+  animation: intro-fade 2.4s var(--ease-soft) both;
+}
+
+/* Soft fade when switching tabs. */
+.fade-in {
+  animation: intro-fade 0.9s var(--ease-soft) both;
+}
+
+/* Slow orbit-ring rotation for hover ornaments (logo: 12s per turn, nav: slower). */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.orbit-spin {
+  animation: orbit-spin 12s linear infinite;
+}
+.orbit-spin-slow {
+  animation: orbit-spin 20s linear infinite;
+}
+
+/* Soft ease for hover ornaments and edge panels. */
+.hover-fade {
+  transition:
+    opacity 0.9s var(--ease-soft),
+    filter 0.9s var(--ease-soft);
+}
+.panel-pop {
+  transition:
+    opacity 0.6s var(--ease-soft),
+    transform 0.6s var(--ease-soft),
+    visibility 0.6s var(--ease-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift,
+  .intro-fade,
+  .fade-in,
+  .orbit-spin,
+  .orbit-spin-slow {
+    animation: none;
+  }
+  .hover-fade,
+  .panel-pop {
+    transition: none;
+  }
+}
