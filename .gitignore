@@ -1,7 +1,7 @@
-   node_modules/
-   .next/
-   .env*
-   backend/cache/
-   backend/data/
-   __pycache__/
-   design/
+node_modules/
+.next/
+.env*
+backend/cache/
+backend/data/
+__pycache__/
+design/
